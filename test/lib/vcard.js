@@ -38,6 +38,10 @@ describe('VCard', function() {
         xmpp.removeAllListeners()
         vcard.init(manager)
     })
+    
+    it('Exports the correct namespace', function() {
+        vcard.NS.should.equal('vcard-temp')
+    })
 
     describe('Handles', function() {
 
@@ -52,6 +56,52 @@ describe('VCard', function() {
             vcard.handles(ltx.parse(stanza)).should.be.true
         })
 
+    })
+    
+    describe('Get a vcard', function() {
+        
+        it('Errors if no callback provided', function(done) {
+            xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            socket.once('xmpp.error.client', function(error) {
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal('Missing callback')
+                error.request.should.eql({})
+                xmpp.removeAllListeners('stanza')
+                done()
+            })
+            socket.send('xmpp.vcard.get', {})
+        })
+
+        it('Errors if non-function callback provided', function(done) {
+            xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            socket.once('xmpp.error.client', function(error) {
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal('Missing callback')
+                error.request.should.eql({})
+                xmpp.removeAllListeners('stanza')
+                done()
+            })
+            socket.send('xmpp.vcard.get', {}, true)
+        })
+        
+        it.skip('Requests another user\'s vcard', function() {
+            
+        })
+        
+        it.skip('Handles error response', function() {
+            
+        })
+        
+        it.skip('Returns a VCard', function() {
+            
+        })
+        
     })
 
 })
