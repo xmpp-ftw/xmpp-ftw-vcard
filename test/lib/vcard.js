@@ -92,7 +92,6 @@ describe('VCard', function() {
         
         it('Requests user\'s vcard', function(done) {
             xmpp.once('stanza', function(stanza) {
-                console.log(stanza.toString())
                 stanza.is('iq').should.be.true
                 stanza.attrs.type.should.equal('get')
                 stanza.attrs.id.should.exist
@@ -102,8 +101,17 @@ describe('VCard', function() {
             socket.send('xmpp.vcard.get', {}, function() {})
         })
         
-        it.skip('Requests another user\'s vcard', function() {
-            
+        it('Requests another user\'s vcard', function() {
+            var request = { to: 'doc@outati.me' }
+            xmpp.once('stanza', function(stanza) {
+                stanza.is('iq').should.be.true
+                stanza.attrs.type.should.equal('get')
+                stanza.attrs.to.should.equal(request.to)
+                stanza.attrs.id.should.exist
+                stanza.getChild('vCard', vcard.NS).should.exist
+                done()
+            })
+            socket.send('xmpp.vcard.get', request, function() {})
         })
         
         it.skip('Handles error response', function() {
