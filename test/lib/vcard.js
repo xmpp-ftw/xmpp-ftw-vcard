@@ -144,4 +144,76 @@ describe('VCard', function() {
         
     })
 
+    describe('Update a vcard', function() {
+        
+        it('Errors if no callback provided', function(done) {
+            xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            socket.once('xmpp.error.client', function(error) {
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal('Missing callback')
+                error.request.should.eql({})
+                xmpp.removeAllListeners('stanza')
+                done()
+            })
+            socket.send('xmpp.vcard.set', {})
+        })
+
+        it('Errors if non-function callback provided', function(done) {
+            xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            socket.once('xmpp.error.client', function(error) {
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal('Missing callback')
+                error.request.should.eql({})
+                xmpp.removeAllListeners('stanza')
+                done()
+            })
+            socket.send('xmpp.vcard.set', {}, true)
+        })
+        
+        it('Requests user\'s vcard', function(done) {
+            xmpp.once('stanza', function(stanza) {
+                stanza.is('iq').should.be.true
+                stanza.attrs.type.should.equal('set')
+                stanza.attrs.id.should.exist
+                stanza.getChild('vCard', vcard.NS).should.exist
+                done()
+            })
+            socket.send('xmpp.vcard.set', {}, function() {})
+        })
+        
+        it('Handles error response', function(done) {
+            xmpp.once('stanza', function() {
+                manager.makeCallback(helper.getStanza('iq-error'))
+            })
+            var callback = function(error, success) {
+                should.not.exist(success)
+                error.should.eql({
+                    type: 'cancel',
+                    condition: 'error-condition'
+                })
+                done()
+            }
+            socket.send('xmpp.vcard.set', {}, callback)
+        })
+        
+        it('Accepts the update', function(done) {
+            xmpp.once('stanza', function() {
+                manager.makeCallback(helper.getStanza('iq-result'))
+            })
+            var callback = function(error, success) {
+                should.not.exist(error)
+                success.should.be.true
+                done()
+            }
+            socket.send('xmpp.vcard.set', {}, callback)
+        })
+        
+    })
+
 })
