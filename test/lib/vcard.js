@@ -3,6 +3,7 @@
 var VCard = require('../../index')
   , ltx    = require('ltx')
   , helper = require('../helper')
+  , should = require('should')
 
 /* jshint -W030 */
 describe('VCard', function() {
@@ -129,8 +130,16 @@ describe('VCard', function() {
             socket.send('xmpp.vcard.get', {}, callback)
         })
         
-        it.skip('Returns a VCard', function() {
-            
+        it('Returns a VCard', function(done) {
+            xmpp.once('stanza', function() {
+                manager.makeCallback(helper.getStanza('vcard-basic'))
+            })
+            var callback = function(error, vcard) {
+                should.not.exist(error)
+                vcard.should.exist
+                done()
+            }
+            socket.send('xmpp.vcard.get', {}, callback)
         })
         
     })
