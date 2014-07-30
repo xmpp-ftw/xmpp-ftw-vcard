@@ -114,8 +114,19 @@ describe('VCard', function() {
             socket.send('xmpp.vcard.get', request, function() {})
         })
         
-        it.skip('Handles error response', function() {
-            
+        it('Handles error response', function(done) {
+            xmpp.once('stanza', function() {
+                manager.makeCallback(helper.getStanza('iq-error'))
+            })
+            var callback = function(error, success) {
+                should.not.exist(success)
+                error.should.eql({
+                    type: 'cancel',
+                    condition: 'error-condition'
+                })
+                done()
+            }
+            socket.send('xmpp.vcard.get', {}, callback)
         })
         
         it.skip('Returns a VCard', function() {

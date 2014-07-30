@@ -1,0 +1,8 @@
+<iq from='notify.wonderland.lit'
+    id='1'
+    to='alice@wonderland.lit/rabbithole'
+    type='error'>
+    <error type='cancel'>
+       <error-condition xmlns='urn:ietf:params:xml:ns:xmpp-stanzas' />
+    </error>
+</iq>
