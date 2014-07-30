@@ -101,7 +101,7 @@ describe('VCard', function() {
             socket.send('xmpp.vcard.get', {}, function() {})
         })
         
-        it('Requests another user\'s vcard', function() {
+        it('Requests another user\'s vcard', function(done) {
             var request = { to: 'doc@outati.me' }
             xmpp.once('stanza', function(stanza) {
                 stanza.is('iq').should.be.true
