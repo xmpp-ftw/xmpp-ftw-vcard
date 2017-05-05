@@ -1,6 +1,8 @@
 xmpp-ftw-vcard
 =================
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/xmpp-ftw/xmpp-ftw-vcard.svg)](https://greenkeeper.io/)
+
 A VCard (XEP-0153) plugin for XMPP-FTW.
 
 https://github.com/lloydwatkin/xmpp-ftw.git
